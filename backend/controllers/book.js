@@ -75,7 +75,7 @@ exports.deleteBook = (req, res, next) => {
             });
         }
     })
-    .catch(error => res.status(400).json({ message: "Impossible de supprimer" }));
+    .catch(error => res.status(400).json({ error }));
 
 };
 
@@ -83,13 +83,23 @@ exports.postRating = (req, res, next) => {
     Book.findOne({ _id: req.params.id })
     .then(book => {
         const newRating = {
-            userId: req.body.userId,
-            grade: req.body.rating
+            userId: req.auth.userId,
+            grade: req.body.rating,
+        };
+        book.ratings.push(newRating);
+        
+        let totalRating = 0;
+        const numberOfRating = book.ratings.length;
+        for(let i = 0; i < numberOfRating; i++){
+            totalRating += book.ratings[i].grade;
         }
-        console.log(newRating)
-        book.ratings.push(newRating)
-        Book.updateOne({ _id: req.params.id }, { ratings })
-        .then(() => res.status(200).json({ message: "Rating added" }))
+        const averageRating = totalRating / numberOfRating;
+        book.averageRating = averageRating;
+        book.save()
+        .then(() => {
+            
+            res.status(200).json(book)
+        })
         .catch(error => res.status(400).json({ error }));
         
     })
