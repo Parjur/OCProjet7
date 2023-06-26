@@ -79,3 +79,19 @@ exports.deleteBook = (req, res, next) => {
 
 };
 
+exports.postRating = (req, res, next) => {
+    Book.findOne({ _id: req.params.id })
+    .then(book => {
+        const newRating = {
+            userId: req.body.userId,
+            grade: req.body.rating
+        }
+        console.log(newRating)
+        book.ratings.push(newRating)
+        Book.updateOne({ _id: req.params.id }, { ratings })
+        .then(() => res.status(200).json({ message: "Rating added" }))
+        .catch(error => res.status(400).json({ error }));
+        
+    })
+    .catch(error => res.status(400).json({ error }));
+};
