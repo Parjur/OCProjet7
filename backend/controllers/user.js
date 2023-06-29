@@ -31,7 +31,7 @@ exports.login = (req, res, next) => {
                         userId: user._id,
                         token: jwt.sign(
                             { userId: user._id },
-                            'T1mes00KYt9C', // À remplacer
+                            'T1mes00KYt9C',
                             { expiresIn: '24h' }
                         )
                     });
