@@ -97,11 +97,9 @@ exports.postRating = (req, res, next) => {
         book.averageRating = averageRating;
         book.save()
         .then(() => {
-            
             res.status(200).json(book)
         })
         .catch(error => res.status(400).json({ error }));
-        
     })
     .catch(error => res.status(400).json({ error }));
 };
